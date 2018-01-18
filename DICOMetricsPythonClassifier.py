@@ -17,8 +17,8 @@ pd.set_option('display.max_columns', 100)
 pd.set_option('display.width', 2000)
 from IPython.core.display import display, HTML
 display(HTML("<style>.container { width:100% !important; }</style>"))
-
-
+import os
+scriptDir = os.path.dirname(os.path.realpath(__file__))
 # In[2]:
 
 
@@ -112,6 +112,14 @@ dataFocusLabelled.columns
 plt.clf()
 
 #Generate today' date:
+from datetime import date, time, datetime
+
+Current = datetime.now().isoformat(timespec='seconds');
+directoryName = Current.replace(':','')
+print(directoryName)
+os.makedirs(directoryName)
+os.chdir(directoryName)
+
 
 for currentDataType in dataLabelledArray:
              currentDataType
@@ -133,17 +141,17 @@ for currentDataType in dataLabelledArray:
                           #Append the CLASS information.
                           C2=pd.concat([C1,label], axis=1)
 
-                          C3 = np.vstack([C2.loc[C2.Class==0],C2.loc[C2.Class==1]]).T
+                          #C3 = np.vstack([C2.loc[C2.Class==0],C2.loc[C2.Class==1]]).T
 
                           #C2.boxplot(by='Class',figsize=(6,6))
-                          C3.hist(figsize=(6,6), label=['QC Fail', 'QC Pass'], histtype='barstacked',stacked=True)
+                          C2.hist(figsize=(6,6), label=['QC Fail', 'QC Pass'], histtype='barstacked',stacked=True)
                           plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
                           #plt.xticks([1,2],['Pass','Fail'])
                           #C2.plot(kind='box',by='Class',figsize=(6,6))
                           plt.savefig(str('Histogram_'+currentDataType.columns[currentMetric])+'.png')
                           plt.show()
-
+os.getcwd()
 #DataType Loop
 for currentDataType in dataLabelledArray:
              currentDataType
@@ -170,28 +178,27 @@ for currentDataType in dataLabelledArray:
                           plt.xticks([1,2],['Pass','Fail'])
 
                           #C2.plot(kind='box',by='Class',figsize=(6,6))
-                          plt.savefig(str('Histogram_'+currentDataType.columns[currentMetric])+'.png')
+                          plt.savefig(str('Boxplot'+currentDataType.columns[currentMetric])+'.png')
                           plt.show()
 
+#Development block:
 
-
-
-dataTextureLabelled
-grouped = dataTextureLabelled.groupby('Class')
-
-data = [grouped.get_group(0).columns[0],grouped.get_group(1).columns[0]]
-plt.figure()
-plt.boxplot(data)
-
-grouped = dataTextureLabelled.groupby('Class')
-rowlength = grouped.ngroups//2
-fig, axs = plt.subplots(figsize=(9,4),
-                        nrows=2, ncols=rowlength,     # fix as above
-                        gridspec_kw=dict(hspace=0.4))
-targets = zip(grouped.groups.keys(), axs.flatten())
-for i, (key, ax) in enumerate(targets):
-    grouped.get_group(key).plot(kind='box')
-
-
-ax.legend()
-plt.show()
+#    dataTextureLabelled
+#    grouped = dataTextureLabelled.groupby('Class')
+#
+#    data = [grouped.get_group(0).columns[0],grouped.get_group(1).columns[0]]
+#    plt.figure()
+#    plt.boxplot(data)
+#
+#    grouped = dataTextureLabelled.groupby('Class')
+#    rowlength = grouped.ngroups//2
+#    fig, axs = plt.subplots(figsize=(9,4),
+#                            nrows=2, ncols=rowlength,     # fix as above
+#                            gridspec_kw=dict(hspace=0.4))
+#    targets = zip(grouped.groups.keys(), axs.flatten())
+#    for i, (key, ax) in enumerate(targets):
+#        grouped.get_group(key).plot(kind='box')
+#
+#
+#    ax.legend()
+#    plt.show()
